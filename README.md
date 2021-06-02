@@ -2,6 +2,11 @@
 
 Cette application sert à la gestion de stock d'emballages. Un emballage est caractérisé par un nom, il possède aussi plusieurs composants. Un composant porte un nom et est constitué de matériaux qui ont chacun un nom, une matière, une masse et un volume
 
+#But de l'exercice 
+Le but de l'exercice est de :
+- Créer une page qui affiche la liste de tous les emballages présents dans la base, avec possibilité de modifier un emballage
+-À partir de la première page, créer un formulaire qui affiche et permet de modifier, àl'écran et en base, un emballage avec ses composants et leurs matériaux.
+
 # Diagramme de classe
 ```plantuml
 ,---------.
