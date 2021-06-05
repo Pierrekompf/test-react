@@ -42,12 +42,12 @@ const HomePage = () => {
 
   return (
     <React.Fragment>
-      <h1>Accueil Packagings</h1>
+      <h1>Accueil emballages</h1>
       <table className="table">
         <thead>
           <tr>
             <th>Id</th>
-            <th>Nom</th>
+            <th>Emballage</th>
           </tr>
         </thead>
         <tbody>
@@ -57,7 +57,14 @@ const HomePage = () => {
               <td>
                 <Link to={`/packagings/${packaging.id}`}>{packaging.name}</Link>
               </td>
-              <td>{packaging.components.id}</td>
+              <td>
+                <Link
+                  className="btn btn-primary"
+                  to={`/packagings/${packaging.id}`}
+                >
+                  Modifier
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>

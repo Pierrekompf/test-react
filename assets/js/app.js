@@ -1,14 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import Navbar from "../js/pages/Navbar";
 import HomePage from "./pages/HomePage";
 import PackagingForm from "./pages/PackagingForm";
 import "../css/bootstrap.css";
 
 const App = () => {
   return (
-    <div className="container">
-      <HashRouter>
+    <HashRouter>
+      <Navbar />
+      <div className="container pt-5">
         <Switch>
           <Route
             path="/packagings/:id"
@@ -17,8 +19,8 @@ const App = () => {
           />
           <Route path="/" render={() => <HomePage />} />
         </Switch>
-      </HashRouter>
-    </div>
+      </div>
+    </HashRouter>
   );
 };
 

@@ -1,45 +1,100 @@
 import React, { Component } from "react";
-import Form from "../common/form";
+import Joi from "joi-browser";
+import Form from "../common/Form";
 import MATERIALS_API from "../services/materialsAPI";
 import PACKAGINGS_API from "../services/packagingsAPI";
 import COMPONENTS_API from "../services/componentsAPI";
 
 class PackagingForm extends Form {
   state = {
-    packagings: [],
+    data: {
+      id: "",
+      name: "",
+      component: "",
+      material: "",
+    },
+    test: [
+      {
+        name: "Baquette",
+      },
+    ],
     materials: [],
     components: [],
+    packagingComponents: [],
+    errors: {},
+  };
+
+  schema = {
+    id: Joi.number(),
+    name: Joi.string().required().min(3).label("Emballage"),
+    component: Joi.string().label("Composants"),
+    material: Joi.string().label("Matériaux"),
   };
 
   async populatePackagings() {
-    packagingId = this.props.match.params.id;
-    const { data: packagings } = await PACKAGINGS_API.get(packagingId);
-    this.setState({ packagings });
+    try {
+      const packaging = await PACKAGINGS_API.get(this.props.match.params.id);
+      this.setState({ data: this.mapToViewModel(packaging) });
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+  async populateComponents() {
+    const components = await COMPONENTS_API.getAll();
+    this.setState({ components });
+  }
+  async populateMaterials() {
+    const materials = await MATERIALS_API.getAll();
+    this.setState({ materials });
+  }
+
+  mapToViewModel(packaging) {
+    return {
+      id: packaging.id,
+      name: packaging.name,
+      component: packaging.components[0].name,
+
+      material: packaging.components[0].materials[0].name,
+    };
+  }
+
+  doSubmit = async () => {
+    await PACKAGINGS_API.update(this.props.match.params.id, this.state.data);
+
+    this.props.history.push("/");
+  };
+
+  async componentDidMount() {
+    await this.populateComponents();
+    await this.populateMaterials();
+    await this.populatePackagings();
+
+    const packagingComponents = this.state.data.components;
+    this.setState({ packagingComponents });
   }
 
   render() {
     return (
       <React.Fragment>
-        <h1>Modifier le packaging {this.props.match.params.id} </h1>
+        <h1>Modifier l'emballage {this.props.match.params.id} </h1>
         <form onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Nom</label>
-            <input id="name" name="name" className="form-control" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="component">Composant</label>
-            <input id="component" name="component" className="form-control" />
-          </div>
+          {this.renderInput("name", "Emballage")}
 
-          <div className="form-group">
-            <label htmlFor="materials">Matériaux</label>
+          {this.renderSelect("component", "Composants", this.state.components)}
 
-            <select name="materials" id="materials" className="form-control">
-              <option value="" />
-            </select>
-          </div>
+          {/*           {this.state.packagingComponents.map((component) => (
+            <div key={component.id}>
+              {this.renderSelect(
+                component.name,
+                "Composant",
+                this.state.components
+              )}
+            </div>
+          ))} */}
 
-          <button className="btn btn-primary">Confirmer</button>
+          {this.renderSelect("material", "Matériaux", this.state.materials)}
+
+          {this.renderButton("Sauvegarder")}
         </form>
       </React.Fragment>
     );

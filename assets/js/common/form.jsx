@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import Joi, { errors } from "joi-browser";
-import Input from "./input";
-import Select from "./select";
+import Input from "./Input";
+import Select from "./Select";
 
 class Form extends Component {
   state = {
-    data: {},
+    data: {
+      components: [],
+    },
     errors: {},
+    packagingComponents: [],
   };
 
   validate = () => {
@@ -45,16 +48,13 @@ class Form extends Component {
     data[input.name] = input.value;
     this.setState({ data, errors });
   };
+
   renderButton(label) {
-    return (
-      <button disabled={this.validate()} className="btn btn-primary">
-        {label}
-      </button>
-    );
+    return <button className="btn btn-primary">{label}</button>;
   }
 
   renderSelect(name, label, options) {
-    const { data, errors } = this.state;
+    const { data, packagingComponents, test, errors } = this.state;
 
     return (
       <Select
@@ -69,7 +69,7 @@ class Form extends Component {
   }
 
   renderInput(name, label, type = "text") {
-    const { data, errors } = this.state;
+    const { data, packagingComponents, test, errors } = this.state;
 
     return (
       <Input
